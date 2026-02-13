@@ -18,3 +18,9 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+
+  profiles:
+    active: "prod"
+
+  config:
+    import: "optional:configserver:http://localhost:8071/"
