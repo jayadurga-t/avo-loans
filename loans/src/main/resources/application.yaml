@@ -6,14 +6,26 @@ spring:
     name: loans
 
   datasource:
-    url: jdbc:mysql://localhost:3309/loansdb
-    username: root
-    password: root
+    #url: jdbc:mysql://localhost:3309/loansdb
+    #username: root
+    #password: root
+    url: jdbc:h2:mem:testdb
+    driverClassName: org.h2.Driver
+    username: durga
+    password: ''
+
+    h2:
+      console:
+        enabled: true
+
   jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: update
     show-sql: true
-  sql:
-    init:
-      mode: always
+  #sql:
+    #init:
+      #mode: always
 
   profiles:
     active: "prod"
@@ -32,3 +44,24 @@ management:
     web:
       exposure:
         include: "*"
+  endpoint:
+    shutdown:
+      access: unrestricted
+    info:
+      env:
+        enabled: true
+
+eureka:
+  instance:
+    preferIpAddress: true
+  client:
+    fetchRegistry: true
+    registerWithEureka: true
+    serviceUrl:
+      defaultZone: http://localhost:8070/eureka/
+
+info:
+  app:
+    name: "accounts"
+    description: "Avo Bank Loans Application"
+    version: "1.0.0"
