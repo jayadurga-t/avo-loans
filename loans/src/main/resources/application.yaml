@@ -70,4 +70,4 @@ logging:
   level:
     com:
       avo:
-        cards: DEBUG
+        loans: DEBUG
