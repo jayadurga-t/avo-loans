@@ -14,9 +14,9 @@ spring:
     username: durga
     password: ''
 
-    h2:
-      console:
-        enabled: true
+  h2:
+    console:
+      enabled: true
 
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
@@ -33,23 +33,31 @@ spring:
   config:
     import: "optional:configserver:http://localhost:8071/"
 
-  rabbitmq:
-    host: "localhost"
-    port: 5672
-    username: "guest"
-    password: "guest"
+#  rabbitmq:
+#    host: "localhost"
+#    port: 5672
+#    username: "guest"
+#    password: "guest"
 
 management:
   endpoints:
     web:
       exposure:
         include: "*"
+  health:
+    readiness-state:
+      enabled: true
+    liveness-state:
+      enabled: true
   endpoint:
     shutdown:
       access: unrestricted
-    info:
-      env:
+    health:
+      probes:
         enabled: true
+  info:
+    env:
+      enabled: true
 
 eureka:
   instance:
