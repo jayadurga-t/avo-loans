@@ -13,14 +13,14 @@ import com.avo.loans.mapper.LoansMapper;
 import com.avo.loans.repository.LoansRepository;
 import com.avo.loans.service.ICustomerService;
 import com.avo.loans.service.ILoansService;
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.util.function.Supplier;
 
 @Service
-@RestController
+@AllArgsConstructor
 public class CustomerServiceImpl implements ICustomerService {
 
     private AccountsFeignClient accountsFeignClient;
@@ -30,7 +30,7 @@ public class CustomerServiceImpl implements ICustomerService {
     private ILoansService iLoansService;
 
     @Override
-    public CustomerDetailsDto fetchCustomerDetails(String mobileNumber) {
+    public CustomerDetailsDto fetchCustomerDetails(String correlationId, String mobileNumber) {
 
 //        ResponseEntity<CustomerDto> customerDtoResponseEntity =
 //                accountsFeignClient.fetchAccountDetails(mobileNumber);
@@ -52,8 +52,8 @@ public class CustomerServiceImpl implements ICustomerService {
 //        customerDetailsDto.setLoansDto(loansDto);
 
         CustomerDetailsDto customerDetailsDto = CustomerMapper.mapToCustomerDetailsDto(
-                accountsFeignClient.fetchAccountDetails(mobileNumber).getBody(), new CustomerDetailsDto());
-        customerDetailsDto.setCardsDto(cardsFeignClient.fetchCard(mobileNumber).getBody());
+                accountsFeignClient.fetchAccountDetails(correlationId,mobileNumber).getBody(), new CustomerDetailsDto());
+        customerDetailsDto.setCardsDto(cardsFeignClient.fetchCard(correlationId, mobileNumber).getBody());
         customerDetailsDto.setLoansDto(iLoansService.fetchLoan(mobileNumber));
 
         return customerDetailsDto;
