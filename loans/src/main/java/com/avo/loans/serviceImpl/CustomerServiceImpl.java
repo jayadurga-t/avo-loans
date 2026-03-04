@@ -32,29 +32,37 @@ public class CustomerServiceImpl implements ICustomerService {
     @Override
     public CustomerDetailsDto fetchCustomerDetails(String correlationId, String mobileNumber) {
 
-//        ResponseEntity<CustomerDto> customerDtoResponseEntity =
-//                accountsFeignClient.fetchAccountDetails(mobileNumber);
-//        CustomerDetailsDto customerDetailsDto = CustomerMapper.mapToCustomerDetailsDto(
-//                customerDtoResponseEntity.getBody(), new CustomerDetailsDto());
-//
-//        ResponseEntity<CardsDto> cardsDtoReponseEntity = cardsFeignClient.fetchCard(mobileNumber);
-//        customerDetailsDto.setCardsDto(cardsDtoReponseEntity.getBody());
-//
-//        Loans loans = loansRepository.findByMobileNumber(mobileNumber).orElseThrow(
-//                new Supplier<ResourceNotFoundException>() {
-//                    @Override
-//                    public ResourceNotFoundException get() {
-//                        return new ResourceNotFoundException("Loan", "mobileNumber", mobileNumber);
-//                    }
-//                }
-//        );
-//        LoansDto loansDto = LoansMapper.mapToLoansDto(loans, new LoansDto());
-//        customerDetailsDto.setLoansDto(loansDto);
+        ResponseEntity<CustomerDto> customerDtoResponseEntity =
+                accountsFeignClient.fetchAccountDetails(correlationId, mobileNumber);
 
-        CustomerDetailsDto customerDetailsDto = CustomerMapper.mapToCustomerDetailsDto(
-                accountsFeignClient.fetchAccountDetails(correlationId,mobileNumber).getBody(), new CustomerDetailsDto());
-        customerDetailsDto.setCardsDto(cardsFeignClient.fetchCard(correlationId, mobileNumber).getBody());
-        customerDetailsDto.setLoansDto(iLoansService.fetchLoan(mobileNumber));
+        CustomerDetailsDto customerDetailsDto = new CustomerDetailsDto();
+
+        if (customerDtoResponseEntity!=null && customerDtoResponseEntity.getBody()!=null){
+            customerDetailsDto = CustomerMapper.mapToCustomerDetailsDto(
+                    customerDtoResponseEntity.getBody(), customerDetailsDto);
+        }
+
+        ResponseEntity<CardsDto> cardsDtoReponseEntity = cardsFeignClient.fetchCard(correlationId, mobileNumber);
+
+        if (cardsDtoReponseEntity!=null && cardsDtoReponseEntity.getBody()!=null){
+            customerDetailsDto.setCardsDto(cardsDtoReponseEntity.getBody());
+        }
+
+        Loans loans = loansRepository.findByMobileNumber(mobileNumber).orElseThrow(
+                new Supplier<ResourceNotFoundException>() {
+                    @Override
+                    public ResourceNotFoundException get() {
+                        return new ResourceNotFoundException("Loan", "mobileNumber", mobileNumber);
+                    }
+                }
+        );
+        LoansDto loansDto = LoansMapper.mapToLoansDto(loans, new LoansDto());
+        customerDetailsDto.setLoansDto(loansDto);
+
+//        CustomerDetailsDto customerDetailsDto = CustomerMapper.mapToCustomerDetailsDto(
+//                accountsFeignClient.fetchAccountDetails(correlationId,mobileNumber).getBody(), new CustomerDetailsDto());
+//        customerDetailsDto.setCardsDto(cardsFeignClient.fetchCard(correlationId, mobileNumber).getBody());
+//        customerDetailsDto.setLoansDto(iLoansService.fetchLoan(mobileNumber));
 
         return customerDetailsDto;
     }
