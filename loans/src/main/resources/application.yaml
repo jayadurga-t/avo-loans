@@ -44,6 +44,10 @@ spring:
 #    username: "guest"
 #    password: "guest"
 
+  metrics:
+    tags:
+      application: ${spring.application.name}
+
 management:
   endpoints:
     web:
