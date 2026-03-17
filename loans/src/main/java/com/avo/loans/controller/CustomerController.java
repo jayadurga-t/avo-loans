@@ -58,8 +58,9 @@ public class CustomerController {
                                                                    @Pattern(regexp = "(^$|[0-9]{10})", message = "Mobile number must be 10 digits")
                                                                    String mobileNumber){
 
-        logger.debug("avobank-correlation-id found: {} ", correlationId);
+        logger.debug("fetchCustomerDetails method start");
         CustomerDetailsDto customerDetailsDto = iCustomerService.fetchCustomerDetails(correlationId, mobileNumber);
+        logger.debug("fetchCustomerDetails method end");
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(customerDetailsDto);

@@ -44,6 +44,10 @@ spring:
 #    username: "guest"
 #    password: "guest"
 
+  metrics:
+    tags:
+      application: ${spring.application.name}
+
 management:
   endpoints:
     web:
@@ -84,6 +88,8 @@ logging:
     com:
       avo:
         loans: DEBUG
+  pattern:
+    level: "%5p [${spring.application.name},%X{trace_id},%X{span_id}]"
 
 resilience4j.circuitbreaker:
   configs:
